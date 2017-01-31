@@ -12,22 +12,12 @@
 	});
 
 	function onVote(evt) {
-		// Submit vote
-			// What button I clicked
 			const voteFor = evt.target.closest('.choice').dataset.value
 			const url = 'https://voting-app-8cc3d.firebaseio.com/votes.json'
-			// Get current count
-			// fetch(url)
 			firebase.database().ref('votes').once('value')
-				// .then(stream => stream.json())
 				.then(snap => snap.val())
 				.then(data => {
-					// Patch the new count
 					const newCount = data && data[voteFor] ? data[voteFor] + 1 : 1
-					// fetch(url, {
-					// 	method: 'PATCH',
-					// 	body: JSON.stringify({ [voteFor]: newCount })
-					// })
 					return firebase.database().ref('votes').update({ [voteFor]: newCount })
 					.then(() => {
 						document.querySelectorAll('h3').forEach(h => {
@@ -42,11 +32,40 @@
 		document.querySelectorAll('button').forEach(btn => btn.remove())
 		// Show current vote totals
 	}
+
+	firebase.database().ref('votes').on('value')
+		.then(snap => snap.val())
+		.then(data => document.querySelectorAll('h3').forEach(h => {
+			const total = Object.values(data).reduce((acc, val) => acc + val)
+			const current = data[h.closest('.choice').dataset.value]
+			h.innerText = Math.round(current / total * 100) + '%'
+		}))
+
+	function onUpdate(snap) {
+		const data = snap.val()
+		snap => snap.val()
+	}
 }
 
-//for each works like a for loop
-// method on all arrays and node lists
-// takes function as argument
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
