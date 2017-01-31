@@ -1,0 +1,16 @@
+.choice_a {
+	float: left;
+}
+
+.choice_b {
+	float: right;
+}
+
+.choice img {
+	max-width: 300px;
+	display: block;
+}
+
+h1 {
+	text-align: center;
+}
