@@ -1,20 +1,13 @@
-.choice_a {
-	float: left;
-}
-
-.choice_b {
-	float: right;
+.choice {
+  width: 45%;
+  float: left;
 }
 
 .choice img {
-	max-width: 300px;
-	display: block;
+  max-width: 90%;
+  display: block;
 }
 
-h1 {
-	text-align: center;
-}
-
-.hide {
-	display: none;
+.hidden {
+  display: none
 }

@@ -1,71 +1,46 @@
 {
-	document.querySelector('.choice_a button').addEventListener('click', onVote)
-	document.querySelector('.choice_b button').addEventListener('click', onVote)
+  firebase.initializeApp({
+    apiKey: 'AIzaSyDF235EkOk0ZBodnGkNqak5Q7Y0OxVdNr4',
+    authDomain: 'c17-voting.firebaseapp.com',
+    databaseURL: 'https://c17-voting.firebaseio.com',
+    storageBucket: 'c17-voting.appspot.com',
+    messagingSenderId: '68201900162',
+  })
 
-	// Initialize Firebase
-	firebase.initializeApp({
-	  apiKey: "AIzaSyBmuQFkAulcPVXQPZ3XmBh8EogP0rEZiEU",
-	  authDomain: "voting-app-8cc3d.firebaseapp.com",
-	  databaseURL: "https://voting-app-8cc3d.firebaseio.com",
-	  storageBucket: "voting-app-8cc3d.appspot.com",
-	  messagingSenderId: "166924303896"
-	});
+  document
+    .querySelectorAll('.choice button')
+    .forEach(btn => btn.addEventListener('click', onVote))
 
-	function onVote(evt) {
-			const voteFor = evt.target.closest('.choice').dataset.value
-			const url = 'https://voting-app-8cc3d.firebaseio.com/votes.json'
-			firebase.database().ref('votes').once('value')
-				.then(snap => snap.val())
-				.then(data => {
-					const newCount = data && data[voteFor] ? data[voteFor] + 1 : 1
-					return firebase.database().ref('votes').update({ [voteFor]: newCount })
-					.then(() => {
-						document.querySelectorAll('h3').forEach(h => {
-							const total = Object.values(data).reduce((acc, val) => acc + val)
-							// returns array of values in object
-							const current = data[h.closest('.choice').dataset.value]
-							h.innerText = Math.round(current / total * 100) + '%'
-						})
-					})
-				})
-			// Then hide buttons
-		document.querySelectorAll('button').forEach(btn => btn.remove())
-		// Show current vote totals
-	}
+  function onVote (evt) {
+    // submit the vote
+    const voteURL = 'https://c17-voting.firebaseio.com/votes.json'
 
-	firebase.database().ref('votes').on('value')
-		.then(snap => snap.val())
-		.then(data => document.querySelectorAll('h3').forEach(h => {
-			const total = Object.values(data).reduce((acc, val) => acc + val)
-			const current = data[h.closest('.choice').dataset.value]
-			h.innerText = Math.round(current / total * 100) + '%'
-		}))
+    // // what button i clicked on
+    const voteFor = evt.target.closest('.choice').dataset.value
 
-	function onUpdate(snap) {
-		const data = snap.val()
-		snap => snap.val()
-	}
+    // // go get the current counts
+    firebase.database().ref('votes').once('value')
+      .then(snap => snap.val())
+      .then(data => {
+        // patch the new count
+        const newCount = data && data[voteFor] ? data[voteFor] += 1 : 1
+        return firebase.database().ref('votes').update({ [voteFor]: newCount })
+      })
+      .catch(console.error)
+
+    document.querySelectorAll('button').forEach(btn => btn.remove())
+    document.querySelectorAll('.hidden').forEach(item => item.classList.remove('hidden'))
+  }
+
+  firebase.database().ref('votes').on('value', onUpdate)
+
+  function onUpdate (snap) {
+    const data = snap.val()
+
+    document.querySelectorAll('h3').forEach(choice => {
+      const total = Object.values(data).reduce((acc, val) => acc + val)
+      const current = data[choice.closest('.choice').dataset.value]
+      choice.innerText = Math.round(current / total * 100) + "%"
+    })
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
