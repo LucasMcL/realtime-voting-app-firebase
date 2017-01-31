@@ -17,18 +17,18 @@
 			const voteFor = evt.target.closest('.choice').dataset.value
 			const url = 'https://voting-app-8cc3d.firebaseio.com/votes.json'
 			// Get current count
-			fetch(url)
-				.then(stream => stream.json())
+			// fetch(url)
+			firebase.database().ref('votes').once('value')
+				// .then(stream => stream.json())
+				.then(snap => snap.val())
 				.then(data => {
 					// Patch the new count
 					const newCount = data && data[voteFor] ? data[voteFor] + 1 : 1
-					// data is the if statement
-						// if data = true, evaluate newCount = data[voteFor] + 1
-						// else evaluate newCount = 1
-					fetch(url, {
-						method: 'PATCH',
-						body: JSON.stringify({ [voteFor]: newCount })
-					})
+					// fetch(url, {
+					// 	method: 'PATCH',
+					// 	body: JSON.stringify({ [voteFor]: newCount })
+					// })
+					return firebase.database().ref('votes').update({ [voteFor]: newCount })
 					.then(() => {
 						document.querySelectorAll('h3').forEach(h => {
 							const total = Object.values(data).reduce((acc, val) => acc + val)
